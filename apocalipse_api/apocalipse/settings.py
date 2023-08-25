@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
 ]
 
 # Aplicativos criados
@@ -46,7 +47,7 @@ INSTALLED_APPS += [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8081",
+    "http://127.0.0.1:8081",
 ]
 
 MIDDLEWARE = [

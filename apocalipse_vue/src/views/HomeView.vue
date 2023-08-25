@@ -9,22 +9,33 @@
           Uma sobrevivência zumbi
         </p>
 
-        <router-link to="/sobrevivencia/" class="button is-danger">
+        <button class="button is-danger" @click="iniciarSobrevivencia">
           <span class="icon"><i class="fas fa-biohazard"></i></span>
           <span>Iniciar apocalipse</span>
-        </router-link>
+        </button>
       </div>
     </section>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import axios from 'axios';
+
 export default {
   name: 'HomeView',
-  components: {
-    HelloWorld
+  methods: {
+    iniciarSobrevivencia() {
+      axios.get('/sobreviventes/novo_jogo/')  // Substitua pelo endpoint correto da sua API
+        .then(response => {
+          // Aqui você pode lidar com os dados da resposta
+          console.log('Resposta da requisição GET:', response.data);
+          // Redirecionar para a rota de sobrevivência ou fazer qualquer outra ação necessária
+          this.$router.push(`/sobrevivencia/${response.data}`);  // Descomente se estiver usando o Vue Router
+        })
+        .catch(error => {
+          console.error('Erro na requisição GET:', error);
+        });
+    }
   }
 }
 </script>

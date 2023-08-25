@@ -1,12 +1,15 @@
 from django.db import models
+import random
+import uuid
 
 class Sobrevivente(models.Model):
     id = models.AutoField(primary_key=True)
+    jogo_id = models.CharField(max_length=100, default=str(uuid.uuid4()))
     nome = models.CharField(max_length=100)
     idade = models.IntegerField()
     sexo = models.CharField(max_length=1)
-    latitude = models.FloatField()
-    longitude = models.FloatField()
+    latitude = models.FloatField(default=random.uniform(-15, 15))
+    longitude = models.FloatField(default=random.uniform(-15, 15))
     avistado_infectado = models.IntegerField(default=0)
     infectado = models.BooleanField(default=False)
     

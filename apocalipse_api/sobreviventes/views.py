@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from .models import Sobrevivente, Inventario
 from rest_framework import status, serializers
 import random
+import uuid
 
 from .serializers import (
     SobreviventeSerializer, InventarioSerializer, 
@@ -18,6 +19,12 @@ class RandomizarView(APIView):
     def get(self, request):
         pass
 
+class CriaIdJogoView(APIView):
+    '''Cria um novo id de jogo'''
+    def get(self, request):
+        id_jogo = str(uuid.uuid4())
+        return Response(id_jogo, status=status.HTTP_200_OK)
+
 class TodosSobreviventesView(APIView):
     '''Busca e cria no banco de dados as informações de todos os sobreviventes'''
 
@@ -27,11 +34,22 @@ class TodosSobreviventesView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request):
-        serializer = SobreviventeSerializer(data=request.data)
+        serializer = SobreviventeSerializer(data=request.data['sobrevivente'])
 
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            sobrevivente = serializer.save()
+            sobrevivente_id = sobrevivente.id
+
+            inventario_data = request.data.get('inventario')
+            inventario_data['sobrevivente'] = sobrevivente_id
+            inventario_serializer = InventarioSerializer(data=inventario_data)
+
+            if inventario_serializer.is_valid():
+                inventario_serializer.save(sobrevivente=sobrevivente)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            
+            else:
+                sobrevivente.delete()
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -104,15 +122,6 @@ class SobreviventeInventario(APIView):
             return Response(serializer.data)
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        
-    def post(self, request, id_sobrevivente):
-        serializer = InventarioSerializer(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class TrocaItens(APIView):
     '''Troca itens entre sobreviventes'''
