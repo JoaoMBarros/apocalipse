@@ -12,12 +12,49 @@ from .serializers import (
     InfectadoSerializer
     )
 
-
-class RandomizarView(APIView):
+class NovoDia(APIView):
     '''Randomiza ações'''
 
+    def randomiza_acoes(self, sobreviventes):
+        acoes = ['fugiu', 'visto_infectado', 'troca']
+        for sobrevivente in sobreviventes:
+            acao = random.choice(acoes)
+            if acao == 'fugiu':
+                # Retorna json com o sobrevivente que fugiu e a nova localização
+                evento = {
+                    'fugiu': {
+                        'sobrevivente': sobrevivente.id,
+                        'latitude': random.uniform(-15, 15),
+                        'longitude': random.uniform(-15, 15)
+                    }
+                }
+                return evento
+            
+            elif acao == 'visto_infectado':
+                # Retorna json com o sobrevivente que foi visto infectado
+                evento = {
+                    'visto_infectado': {
+                        'sobrevivente_infectado': random.choice(sobreviventes).id,
+                        'sobrevivente_avistou': sobrevivente.id
+                    }
+                }
+                return evento
+
+            elif acao == 'troca':
+                # Retorna json com os sobreviventes que querem trocar itens
+                evento = {
+                    'troca':{
+                        'sobrevivente': sobrevivente.id,
+                        'outro_sobrevivente': random.choice(sobreviventes).id,
+                    }
+                }
+
+                return evento
+            
     def get(self, request):
-        pass
+        id_jogo = request.data['id_jogo']
+        sobreviventes = Sobrevivente.objects.filter(jogo_id=id_jogo)
+        return Response(self.randomiza_acoes(sobreviventes), status=status.HTTP_200_OK)
 
 class CriaIdJogoView(APIView):
     '''Cria um novo id de jogo'''

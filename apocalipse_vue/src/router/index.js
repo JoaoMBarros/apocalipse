@@ -16,6 +16,11 @@ const routes = [
     path: '/sobrevivencia/:id',
     name: 'sobrevivencia',
     component: () => import(/* webpackChunkName: "sobrevivencia" */ '../views/SobrevivenciaView.vue')
+  },
+  {
+    path: '/sobrevivencia/:id/iniciar',
+    name: 'inicio',
+    component: () => import(/* webpackChunkName: "sobrevivencia" */ '../views/InicioSobrevivencia.vue')
   }
 ]
 

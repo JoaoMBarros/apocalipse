@@ -25,12 +25,10 @@ export default {
   name: 'HomeView',
   methods: {
     iniciarSobrevivencia() {
-      axios.get('/sobreviventes/novo_jogo/')  // Substitua pelo endpoint correto da sua API
+      axios.get('/sobreviventes/novo_jogo/') 
         .then(response => {
-          // Aqui você pode lidar com os dados da resposta
           console.log('Resposta da requisição GET:', response.data);
-          // Redirecionar para a rota de sobrevivência ou fazer qualquer outra ação necessária
-          this.$router.push(`/sobrevivencia/${response.data}`);  // Descomente se estiver usando o Vue Router
+          this.$router.push(`/sobrevivencia/${response.data}`);
         })
         .catch(error => {
           console.error('Erro na requisição GET:', error);
