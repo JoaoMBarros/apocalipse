@@ -90,6 +90,13 @@ class TodosSobreviventesView(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class SobreviventeIdJogoView(APIView):
+    '''Busca no banco de dados as informações de todos os sobreviventes de um jogo'''
+    def get(self, request, id_jogo):
+        sobreviventes = Sobrevivente.objects.filter(jogo_id=id_jogo)
+        serializer = SobreviventeSerializer(sobreviventes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 class SobreviventeView(APIView):
     '''Busca e atualiza no banco de dados as informações de um sobrevivente'''
 

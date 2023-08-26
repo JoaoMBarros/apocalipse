@@ -5,10 +5,7 @@
         <label>Idade: <input class="input" type="number" v-model="sobrevivente.idade"></label>
         <label>Sexo: <input class="input" type="text" v-model="sobrevivente.sexo"></label>
         
-        <button style="margin-top: 10px;" class="button is-primary is-rounded" @click="toggleInventario()">
-          {{ mostrarInventario ? 'Voltar' : 'Inventário' }}
-        </button>
-
+        <button style="margin-top: 10px;" class="button is-primary is-rounded" @click="toggleInventario()">Inventário</button>
         <button style="margin-top: 10px; " class="button is-danger is-rounded" @click="excluirSobrevivente()">Excluir</button>
       </template>
   

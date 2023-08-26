@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     path('', views.TodosSobreviventesView.as_view(), name='sobreviventes'),
+    path('<uuid:id_jogo>/', views.SobreviventeIdJogoView.as_view(), name='sobreviventes_jogo'),
     path('novo_jogo/', views.CriaIdJogoView.as_view(), name='novo_jogo'),
     path('<int:id_sobrevivente>/', views.SobreviventeView.as_view(), name='sobrevivente'),
     path('<int:id_sobrevivente>/inventario/', views.SobreviventeInventario.as_view(), name='inventario'),

@@ -42,10 +42,10 @@ export default {
   },
   methods: {
     adicionarSobrevivente() {
-      this.sobreviventes.push({});
+        this.sobreviventes.push({});
     },
     excluirSobrevivente(index) {
-      this.sobreviventes.splice(index, 1);
+        this.sobreviventes.splice(index, 1);
     },
     iniciar(){
         this.$router.push(`${this.current_url}/iniciar/`)
