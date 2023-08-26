@@ -7,7 +7,7 @@
               <div class="buttons">
                 <router-link to="/" class="button is-info">
                   <span class="icon"><i class="fas fa-home"></i></span>
-                  <span>Home</span>
+                  <span style="font-family: Flesh-Eating Comic Bold">Home</span>
                 </router-link>
               </div>
             </div>

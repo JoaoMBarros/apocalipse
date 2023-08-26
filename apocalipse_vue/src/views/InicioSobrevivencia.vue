@@ -5,11 +5,10 @@
         <p style="font-family: Flesh-Eating Comic Bold; font-size: 100px;">
           Apocalipse
         </p>
-        <button class="button is-danger">
+        <button class="button is-danger is-rounded">
           <span class="icon"><i class="fas fa-biohazard"></i></span>
           <span>Iniciar</span>
         </button>
-
         <div class="columns is-flex-wrap-wrap">
           <ListarSobreviventes :sobreviventes="this.sobreviventes"/>
         </div>
@@ -48,10 +47,10 @@ export default {
     },
     methods: {
         listarSobreviventes() {
+            // Retorna a lista com os sobreviventes
             axios.get(`/sobreviventes/${this.$route.params.id}/`) 
               .then(response => {
                 console.log('Resposta da requisição GET:', response.data);
-                // Retorna a lista com os sobreviventes
                 this.sobreviventes = response.data;
               })
               .catch(error => {

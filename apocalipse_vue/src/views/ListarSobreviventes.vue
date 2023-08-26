@@ -1,5 +1,5 @@
 <template>
-    <div v-for="(sobrevivente, index) in sobreviventes" :key="index" class="box animate__animated animate__fadeIn" style="width: 25%; font-family: Flesh-Eating Comic Bold; margin: 45px;">
+    <div v-for="(sobrevivente, index) in sobreviventes" :key="index" class="box has-background-white-ter animate__animated animate__fadeIn" style="width: 25%; font-family: Flesh-Eating Comic Bold; margin: 45px;">
         <label class="is-size-5">
           <span v-if="!mostrarInventario[sobrevivente.id]?.mostrarInventario">
             <strong>Nome:</strong> {{ sobrevivente.nome }}<br>
@@ -15,7 +15,7 @@
         </label>
 
         <div class="has-text-centered" style="margin-top: 10px">
-            <button class="button is-primary is-rounded" @click="buscarInventario(sobrevivente.id)">
+            <button class="button is-primary is-rounded" style="font-family: Flesh-Eating Comic Bold;" @click="buscarInventario(sobrevivente.id)">
                 {{ mostrarInventario[sobrevivente.id]?.mostrarInventario ? 'Voltar' : 'Inventário' }}
             </button>            
         </div>
@@ -28,7 +28,6 @@ import axios from 'axios';
 export default{
     props: {sobreviventes: 'sobreviventes'},
     name: 'ListarSobreviventes',
-    // Dentro do componente Vue
     data() {
     return {
         mostrarInventario: {} // Mostrar inventário para cada sobrevivente

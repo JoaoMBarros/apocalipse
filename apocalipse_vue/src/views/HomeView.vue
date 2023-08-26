@@ -8,8 +8,7 @@
         <p class="subtitle" style="font-family: Flesh-Eating Comic Bold; font-size: 60px;">
           Uma sobrevivência zumbi
         </p>
-
-        <button class="button is-danger" @click="iniciarSobrevivencia">
+        <button class="button is-danger" style="font-family: Flesh-Eating Comic Bold" @click="iniciarSobrevivencia">
           <span class="icon"><i class="fas fa-biohazard"></i></span>
           <span>Iniciar apocalipse</span>
         </button>
