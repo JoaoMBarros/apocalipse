@@ -1,6 +1,6 @@
 <template>
     <div class="box has-background-white-ter animate__animated animate__fadeIn" style="width: auto; font-family: Flesh-Eating Comic Bold; margin: 45px; display: flex; justify-content: center;">
-      <div class="box" style="width: 20%; margin-left: 20%;">
+      <div class="box" style="font-size: 20px; width: 25%; margin-left: 20%;">
         <label>
           <span>
             Localização: {{ sobrevivente.latitude }}, {{ sobrevivente.longitude }}<br>
@@ -12,15 +12,37 @@
         </label>
       </div>
 
-        <span v-if="acao == 'troca'" style="margin-top: 50px; margin-left: 20px; margin-right: 20px;">
-          Sobrevivente {{ sobrevivente.nome }} quer trocar inventário com {{ outro_sobrevivente.nome }}!<br>
-        </span>
-        <span v-else style="margin-top: 50px; margin-left: 20px; margin-right: 20px">
-          <label v-if="acao === 'fugiu'">Sobrevivente {{ sobrevivente.nome }} quer fugir!</label>
-          <label v-else-if="acao === 'visto_infectado'">Sobrevivente {{ sobrevivente.nome }} foi avistado infectado!</label>
-        </span>
+        <div style="margin-left: 20px; margin-right: 20px; font-size: 19px;">
+
+            <span v-if="acao == 'troca'">
+            Sobrevivente {{ sobrevivente.nome }} quer trocar itens com {{ outro_sobrevivente.nome }}!<br>
+                <div class="columns">
+                    <div v-for="item in ['agua', 'comida', 'medicamento', 'municao']" :key="item" class="column is-3">
+                        <label>{{ item.charAt(0).toUpperCase() + item.slice(1) }} <br>
+                        <input class="input" type="number" v-model="itens[item]">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="columns">
+                    <div v-for="item in ['agua', 'comida', 'medicamento', 'municao']" :key="item" class="column is-3">
+                        <label>{{ item.charAt(0).toUpperCase() + item.slice(1) }} <br>
+                        <input class="input" type="number" v-model="outro_itens[item]">
+                        </label>
+                    </div>
+                </div>
+            </span>
+
+            <span v-else>
+                <label v-if="acao === 'fugiu'">
+                    Sobrevivente {{ sobrevivente.nome }} quer fugir! <br>
+                    Nova localização: {{ random_latitude }}, {{ random_longitude }}
+                </label>
+                <label v-else-if="acao === 'visto_infectado'" class="is-inline-block">Sobrevivente {{ sobrevivente.nome }} foi avistado infectado!</label>
+            </span>
+            </div>
   
-      <div v-if="acao == 'troca'" class="box" style="width: 20%;">
+      <div v-if="acao == 'troca'" class="box" style="width: 25%; font-size: 20px;">
             <label>
               <span>
                 Localização: {{ outro_sobrevivente.latitude }}, {{ outro_sobrevivente.longitude }}<br>
@@ -32,9 +54,9 @@
             </label>
       </div>
 
-        <div style="margin-top: auto; margin-left: auto;">
-            <button class="button is-primary is-rounded" style="font-family: Flesh-Eating Comic Bold;">Ação Concluída</button>
-            <button class="button is-primary is-rounded" style="font-family: Flesh-Eating Comic Bold;">Outra Ação</button>
+      <div style="display: flex; justify-content: flex-end; width:100%; margin-top: 10px;">
+            <button class="button is-danger is-rounded" style="font-family: Flesh-Eating Comic Bold;" @click="recebeNovaAcao">Outra Ação</button>
+            <button class="button is-primary is-rounded" style="font-family: Flesh-Eating Comic Bold; margin-right: 5px;" @click="enviaNovaAcao">Concluir ação</button>
         </div>
     </div>
   </template>
@@ -76,6 +98,19 @@ export default{
                 municao: '',
             },
 
+            itens: {
+                agua: 0,
+                comida: 0,
+                medicamento: 0,
+                municao: 0,
+            },
+
+            outro_itens: {
+                agua: 0,
+                comida: 0,
+                medicamento: 0,
+                municao: 0,
+            },
 
             random_latitude: '',
             random_longitude: '',
@@ -83,6 +118,22 @@ export default{
     },
 
     methods: {
+        resetaDados(){
+            this.itens = {
+                agua: 0,
+                comida: 0,
+                medicamento: 0,
+                municao: 0,
+            },
+            this.outro_itens = {
+                agua: 0,
+                comida: 0,
+                medicamento: 0,
+                municao: 0,
+            },
+            this.random_latitude = '',
+            this.random_longitude = ''
+        },
         async recebeNovaAcao() {
             try {
                 const response = await axios.get(`/sobreviventes/${this.$route.params.id}/nova_acao`);
@@ -93,6 +144,11 @@ export default{
 
                 const inventarioResponse = await axios.get(`/sobreviventes/${response.data.sobrevivente}/inventario/`);
                 this.inventario = inventarioResponse.data;
+
+                if (this.acao === 'fugiu') {
+                    this.random_latitude = this.getRandomArbitrary(-15, 15);
+                    this.random_longitude = this.getRandomArbitrary(-15, 15);
+                }
 
                 if (this.acao === 'troca' || this.acao === 'visto_infectado') {
                 const outroSobreviventeResponse = await axios.get(`/sobreviventes/${response.data.outro_sobrevivente}/`);
@@ -105,54 +161,70 @@ export default{
                 console.error('Erro na requisição GET:', error);
             }
         },
-        enviaNovaAcao(){
-            if (this.acao == 'fugiu'){
-                const jsonData = {
+        enviaNovaAcao() {
+            let jsonData = {};
+            let endpoint = '';
+
+            if (this.acao === 'fugiu') {
+                jsonData = {
+                sobrevivente: this.sobrevivente.id,
+                latitude: this.random_latitude,
+                longitude: this.random_longitude,
+                };
+                endpoint = '/sobreviventes/localizacao/';
+            } else if (this.acao === 'visto_infectado') {
+                jsonData = {
+                sobrevivente: this.sobrevivente.id,
+                };
+                endpoint = '/sobreviventes/infectado/';
+            } else if (this.acao === 'troca') {
+                jsonData = {
+                troca: [
+                    {
                     sobrevivente: this.sobrevivente.id,
-                    latitude: this.sobrevivente.latitude,
-                    longitude: this.sobrevivente.longitude,
+                    itens: {
+                        agua: this.itens.agua,
+                        comida: this.itens.comida,
+                        medicamento: this.itens.medicamento,
+                        municao: this.itens.municao,
+                    },
+                    },
+                    {
+                    sobrevivente: this.outro_sobrevivente.id,
+                    itens: {
+                        agua: this.outro_itens.agua,
+                        comida: this.outro_itens.comida,
+                        medicamento: this.outro_itens.medicamento,
+                        municao: this.outro_itens.municao,
+                    },
+                    },
+                ],
                 };
-
-                axios.patch('/sobreviventes/localizacao/', jsonData)
-
-            } else if (this.acao == 'avistou_infectado'){
-                const jsonData = {
-                    sobrevivente: this.sobrevivente.id,
-                };
-
-                axios.patch('/sobreviventes/localizacao/', jsonData)
-
-            } else if (this.acao == 'trocou_inventario'){
-                const jsonData = {
-                    troca: [
-                        {
-                            sobrevivente: this.sobrevivente.id,
-                            itens: {
-                                agua: this.inventario.agua,
-                                comida: this.inventario.comida,
-                                medicamento: this.inventario.medicamento,
-                                municao: this.inventario.municao,
-                            }
-                        },
-                        {
-                            sobrevivente: this.outro_sobrevivente.id,
-                            itens: {
-                                agua: this.outro_sobrevivente.agua,
-                                comida: this.outro_sobrevivente.comida,
-                                medicamento: this.outro_sobrevivente.medicamento,
-                                municao: this.outro_sobrevivente.municao,
-                            }
-                        }
-                    ]
-                };
-
-                axios.post('/sobreviventes/troca/', jsonData)
+                endpoint = '/sobreviventes/troca/';
             }
-        },
+
+            const requestConfig = {
+                method: this.acao === 'troca' ? 'post' : 'patch',
+                url: endpoint,
+                data: jsonData,
+            };
+
+            console.log(requestConfig)
+            
+            axios(requestConfig)
+                .then(response => {
+                    this.recebeNovaAcao();
+                    this.resetaDados();
+                })
+                .catch(error => {
+                alert(error.response.data)
+                });
+            },
+
+        // Gera um numero float aleatório
         getRandomArbitrary(min, max) {
             return Math.random() * (max - min) + min;
         }
-
     },
     created(){
         this.recebeNovaAcao()

@@ -5,7 +5,7 @@ import uuid
 
 class Sobrevivente(models.Model):
     id = models.AutoField(primary_key=True)
-    jogo_id = models.CharField(max_length=100, default=str(uuid.uuid4()))
+    jogo_id = models.CharField(max_length=100)
     nome = models.CharField(max_length=100)
     idade = models.IntegerField()
     sexo = models.CharField(max_length=1)
