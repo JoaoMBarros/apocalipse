@@ -267,3 +267,47 @@ class TrocaItens(APIView):
 
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class Relatorio(APIView):
+    
+    def get(self, request, id_jogo):
+        total_sobreviventes = Sobrevivente.objects.filter(jogo_id=id_jogo).count()
+        sobreviventes_infectados_count = Sobrevivente.objects.filter(jogo_id=id_jogo, infectado=True).count()
+        sobreviventes_nao_infectados_count = Sobrevivente.objects.filter(jogo_id=id_jogo, infectado=False).count()
+
+        sobreviventes_infectados_porcentagem = float((sobreviventes_infectados_count / total_sobreviventes)) * 100
+        sobreviventes_nao_infectados_porcentagem = float((sobreviventes_nao_infectados_count / total_sobreviventes)) * 100
+
+        inventarios = Inventario.objects.filter(sobrevivente__jogo_id=id_jogo)
+
+        agua_media_nao_infectados = sum(inventario.agua for inventario in inventarios if not inventario.sobrevivente.infectado) / sobreviventes_nao_infectados_count
+        comida_media_nao_infectados = sum(inventario.comida for inventario in inventarios if not inventario.sobrevivente.infectado) / sobreviventes_nao_infectados_count
+        medicamento_media_nao_infectados = sum(inventario.medicamento for inventario in inventarios if not inventario.sobrevivente.infectado) / sobreviventes_nao_infectados_count
+        municao_media_nao_infectados = sum(inventario.municao for inventario in inventarios if not inventario.sobrevivente.infectado) / sobreviventes_nao_infectados_count
+
+        agua_total_infectados = sum(inventario.agua for inventario in inventarios if inventario.sobrevivente.infectado)
+        comida_total_infectados = sum(inventario.comida for inventario in inventarios if inventario.sobrevivente.infectado)
+        medicamento_total_infectados = sum(inventario.medicamento for inventario in inventarios if inventario.sobrevivente.infectado)
+        municao_total_infectados = sum(inventario.municao for inventario in inventarios if inventario.sobrevivente.infectado)
+
+        pontos_perdidos = (agua_total_infectados * 4) + (comida_total_infectados * 3) + (medicamento_total_infectados * 2) + (municao_total_infectados * 1)
+
+        relatorio = {
+            'porcentagem_sobreviventes_infectados': sobreviventes_infectados_porcentagem,
+            'porcentagem_sobreviventes_nao_infectados': sobreviventes_nao_infectados_porcentagem,
+            'quantidade_itens_nao_infectados': {
+                'agua': agua_media_nao_infectados,
+                'comida': comida_media_nao_infectados,
+                'medicamento': medicamento_media_nao_infectados,
+                'municao': municao_media_nao_infectados
+            },
+            'pontos_perdidos': pontos_perdidos,
+            'quantidade_itens_perdidos': {
+                'agua': agua_total_infectados,
+                'comida': comida_total_infectados,
+                'medicamento': medicamento_total_infectados,
+                'municao': municao_total_infectados
+            }
+        }
+
+        return Response(relatorio, status=status.HTTP_200_OK)

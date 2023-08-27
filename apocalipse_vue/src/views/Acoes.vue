@@ -57,6 +57,7 @@
       <div style="display: flex; justify-content: flex-end; width:100%; margin-top: 10px;">
             <button class="button is-danger is-rounded" style="font-family: Flesh-Eating Comic Bold;" @click="recebeNovaAcao">Outra Ação</button>
             <button class="button is-primary is-rounded" style="font-family: Flesh-Eating Comic Bold; margin-right: 5px;" @click="enviaNovaAcao">Concluir ação</button>
+            <button class="button is-dark is-rounded" style="font-family: Flesh-Eating Comic Bold; margin-right: 5px;" @click="finalizaSimulacao">Finalizar</button>
         </div>
     </div>
   </template>
@@ -219,8 +220,10 @@ export default{
                 .catch(error => {
                 alert(error.response.data)
                 });
-            },
-
+        },
+        finalizaSimulacao(){
+            this.$router.push(`/sobrevivencia/${this.$route.params.id}/relatorio/`)
+        },
         // Gera um numero float aleatório
         getRandomArbitrary(min, max) {
             return Math.random() * (max - min) + min;
