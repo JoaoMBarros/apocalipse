@@ -61,7 +61,15 @@
             sobrevivente: this.sobrevivente,
             inventario: this.inventario
           };
-  
+
+          // Checar se algum campo do sobrevivente está vazio
+            for (const [key, value] of Object.entries(jsonData.sobrevivente)) {
+                if (value === '') {
+                alert('Preencha todos os campos de sobrevivente!');
+                return;
+                }
+            }
+
           axios.post('/sobreviventes/', jsonData)
             .then(response => {
               console.log('Dados enviados:', response.data);

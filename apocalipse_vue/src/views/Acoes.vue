@@ -51,14 +51,12 @@ export default{
     name: 'Acoes',
     data() {
         return {
-            acao: '',
+            acao: {
             sobrevivente: {
                 id: '',
                 nome: '',
                 idade: '',
                 sexo: '',
-                latitude: '',
-                longitude: '',
                 jogo_id: '',
             },
             outro_sobrevivente: {
@@ -66,10 +64,8 @@ export default{
                 nome: '',
                 idade: '',
                 sexo: '',
-                latitude: '',
-                longitude: '',
                 jogo_id: '',
-            },
+            }},
             inventario: {
                 agua: '',
                 comida: '',
@@ -107,7 +103,7 @@ export default{
                 };
 
                 axios.patch('/sobreviventes/localizacao/', jsonData)
-                
+
             } else if (this.acao == 'trocou_inventario'){
                 const jsonData = {
                     troca: [

@@ -48,6 +48,11 @@ export default {
         this.sobreviventes.splice(index, 1);
     },
     iniciar(){
+        if (this.sobreviventes.length < 2){
+            alert("É necessário ter no mínimo 2 sobreviventes para iniciar o jogo")
+            return
+        }
+
         this.$router.push(`${this.current_url}/iniciar/`)
     }
   },

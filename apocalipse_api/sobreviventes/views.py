@@ -23,7 +23,10 @@ class NovaAcao(APIView):
                 # Retorna json com o sobrevivente que fugiu e a nova localização
                 evento = {
                     'fugiu': {
-                        'sobrevivente': sobrevivente.id,
+                        'sobrevivente': {
+                            'sobrevivente': sobrevivente.id,
+                            'nome': sobrevivente.nome,
+                        },
                         'latitude': random.uniform(-15, 15),
                         'longitude': random.uniform(-15, 15)
                     }
@@ -31,21 +34,41 @@ class NovaAcao(APIView):
                 return evento
             
             elif acao == 'visto_infectado':
+                outro_sobrevivente = random.choice(sobrevivente)
+                while outro_sobrevivente.id == sobrevivente.id:
+                    outro_sobrevivente = random.choice(sobrevivente)
+
                 # Retorna json com o sobrevivente que foi visto infectado
                 evento = {
                     'visto_infectado': {
-                        'sobrevivente_infectado': random.choice(sobreviventes).id,
-                        'sobrevivente_avistou': sobrevivente.id
+                        'sobrevivente': {
+                            'sobrevivente': sobrevivente.id,
+                            'nome': sobrevivente.nome,
+                        },
+                        'outro_sobrevivente': {
+                            'sobrevivente': outro_sobrevivente.id,
+                            'nome': outro_sobrevivente.nome,
+                        }
                     }
                 }
                 return evento
 
             elif acao == 'troca':
+                outro_sobrevivente = random.choice(sobrevivente)
+                while outro_sobrevivente.id == sobrevivente.id:
+                    outro_sobrevivente = random.choice(sobrevivente)
+
                 # Retorna json com os sobreviventes que querem trocar itens
                 evento = {
                     'troca':{
-                        'sobrevivente': sobrevivente.id,
-                        'outro_sobrevivente': random.choice(sobreviventes).id,
+                        'sobrevivente': {
+                            'sobrevivente': sobrevivente.id,
+                            'nome': sobrevivente.nome,
+                        },
+                        'outro_sobrevivente': {
+                            'sobrevivente': outro_sobrevivente.id,
+                            'nome': outro_sobrevivente.nome,
+                        },
                     }
                 }
 
