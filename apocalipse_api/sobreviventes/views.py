@@ -17,70 +17,47 @@ class NovaAcao(APIView):
 
     def randomiza_acoes(self, sobreviventes):
         acoes = ['fugiu', 'visto_infectado', 'troca']
-        for sobrevivente in sobreviventes:
-            acao = random.choice(acoes)
-            if acao == 'fugiu':
-                # Retorna json com o sobrevivente que fugiu e a nova localização
-                evento = {
-                    'fugiu': {
-                        'sobrevivente': {
-                            'sobrevivente': sobrevivente.id,
-                            'nome': sobrevivente.nome,
-                        },
-                        'latitude': random.uniform(-15, 15),
-                        'longitude': random.uniform(-15, 15)
-                    }
+        acao = random.choice(acoes)
+        sobrevivente = random.choice(sobreviventes)
+
+        if acao == 'fugiu':
+            # Retorna json com o sobrevivente que fugiu e a nova localização
+            evento = {
+                    'acao': 'fugiu',
+                    'sobrevivente': sobrevivente.id,
                 }
-                return evento
-            
-            elif acao == 'visto_infectado':
-                outro_sobrevivente = random.choice(sobrevivente)
-                while outro_sobrevivente.id == sobrevivente.id:
-                    outro_sobrevivente = random.choice(sobrevivente)
+            return evento
+        
+        elif acao == 'visto_infectado':
+            outro_sobrevivente = random.choice(sobreviventes)
+            while outro_sobrevivente.id == sobrevivente.id:
+                outro_sobrevivente = random.choice(sobreviventes)
 
-                # Retorna json com o sobrevivente que foi visto infectado
-                evento = {
-                    'visto_infectado': {
-                        'sobrevivente': {
-                            'sobrevivente': sobrevivente.id,
-                            'nome': sobrevivente.nome,
-                        },
-                        'outro_sobrevivente': {
-                            'sobrevivente': outro_sobrevivente.id,
-                            'nome': outro_sobrevivente.nome,
-                        }
-                    }
+            # Retorna json com o sobrevivente que foi visto infectado
+            evento = {
+                    'acao': 'visto_infectado',
+                    'sobrevivente': sobrevivente.id,
+                    'outro_sobrevivente': outro_sobrevivente.id,
                 }
-                return evento
+            return evento
 
-            elif acao == 'troca':
-                outro_sobrevivente = random.choice(sobrevivente)
-                while outro_sobrevivente.id == sobrevivente.id:
-                    outro_sobrevivente = random.choice(sobrevivente)
+        elif acao == 'troca':
+            outro_sobrevivente = random.choice(sobreviventes)
+            while outro_sobrevivente.id == sobrevivente.id:
+                outro_sobrevivente = random.choice(sobreviventes)
 
-                # Retorna json com os sobreviventes que querem trocar itens
-                evento = {
-                    'troca':{
-                        'sobrevivente': {
-                            'sobrevivente': sobrevivente.id,
-                            'nome': sobrevivente.nome,
-                        },
-                        'outro_sobrevivente': {
-                            'sobrevivente': outro_sobrevivente.id,
-                            'nome': outro_sobrevivente.nome,
-                        },
-                    }
+            # Retorna json com os sobreviventes que querem trocar itens
+            evento = {
+                    'acao': 'troca',
+                    'sobrevivente': sobrevivente.id,
+                    'outro_sobrevivente': outro_sobrevivente.id,
                 }
-
-                return evento
+            return evento
             
     def get(self, request, id_jogo):
         sobreviventes = Sobrevivente.objects.filter(jogo_id=id_jogo)
-        if sobreviventes:
-            return Response(self.randomiza_acoes(sobreviventes), status=status.HTTP_200_OK)
-        else:
-            return Response('Nenhum sobrevivente', status=status.HTTP_404_NOT_FOUND)
-
+        return Response(self.randomiza_acoes(sobreviventes), status=status.HTTP_200_OK)
+        
 class CriaIdJogoView(APIView):
     '''Cria um novo id de jogo'''
     def get(self, request):
