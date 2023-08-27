@@ -9,7 +9,7 @@
             <span class="icon"> <i class="fas fa-biohazard"></i></span>
             <span>Novo Sobrevivente</span>
             </button>
-
+            
             <button class="button is-danger is-rounded" @click="iniciar">
             <span class="icon"> <i class="fas fa-biohazard"></i></span>
             <span>Iniciar</span>
@@ -53,9 +53,10 @@ export default {
   },
 
   created(){
-    const route=useRoute();
-    const path = route.path;
-    console.log(path)
-    this.current_url = path;}
+        const route=useRoute();
+        const path = route.path;
+        console.log(path)
+        this.current_url = path;
+    }
 }
 </script>

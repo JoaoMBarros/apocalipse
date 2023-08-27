@@ -16,7 +16,12 @@ const routes = [
     path: '/sobrevivencia/:id/iniciar',
     name: 'inicio',
     component: () => import(/* webpackChunkName: "sobrevivencia" */ '../views/InicioSobrevivencia.vue')
-  }
+  },
+  {
+  path: '/sobrevivencia/:id/acoes',
+  name: 'acoes',
+  component: () => import(/* webpackChunkName: "sobrevivencia" */ '../views/Acoes.vue')
+  },
 ]
 
 const router = createRouter({

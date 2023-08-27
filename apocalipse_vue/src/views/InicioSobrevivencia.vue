@@ -5,7 +5,7 @@
         <p style="font-family: Flesh-Eating Comic Bold; font-size: 100px;">
           Apocalipse
         </p>
-        <button class="button is-danger is-rounded">
+        <button class="button is-danger is-rounded" @click="comecarAcoes">
           <span class="icon"><i class="fas fa-biohazard"></i></span>
           <span>Iniciar</span>
         </button>
@@ -19,8 +19,8 @@
 
 <script>
 import axios from 'axios';
-import { useRoute } from 'vue-router';
 import ListarSobreviventes from './ListarSobreviventes.vue';
+import { useRoute  } from 'vue-router';
 
 export default {
     name: 'InicioSobrevivenciaView',
@@ -43,6 +43,7 @@ export default {
             },
             sobreviventes: [],
             id_jogo: '',
+            current_url: '',
         };
     },
     methods: {
@@ -57,6 +58,9 @@ export default {
                 console.error('Erro na requisição GET:', error);
               });
           },
+          comecarAcoes(){
+            this.$router.push(`/sobrevivencia/${this.$route.params.id}/acoes/`)
+          }
     },
     created(){
         this.listarSobreviventes();

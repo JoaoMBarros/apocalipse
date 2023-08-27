@@ -12,7 +12,7 @@ from .serializers import (
     InfectadoSerializer
     )
 
-class NovoDia(APIView):
+class NovaAcao(APIView):
     '''Randomiza ações'''
 
     def randomiza_acoes(self, sobreviventes):
@@ -51,10 +51,12 @@ class NovoDia(APIView):
 
                 return evento
             
-    def get(self, request):
-        id_jogo = request.data['id_jogo']
+    def get(self, request, id_jogo):
         sobreviventes = Sobrevivente.objects.filter(jogo_id=id_jogo)
-        return Response(self.randomiza_acoes(sobreviventes), status=status.HTTP_200_OK)
+        if sobreviventes:
+            return Response(self.randomiza_acoes(sobreviventes), status=status.HTTP_200_OK)
+        else:
+            return Response('Nenhum sobrevivente', status=status.HTTP_404_NOT_FOUND)
 
 class CriaIdJogoView(APIView):
     '''Cria um novo id de jogo'''
@@ -121,8 +123,9 @@ class SobreviventeView(APIView):
 class SobreviventeLocalizacao(APIView):
     '''Busca e atualiza no banco de dados as informações de localização de um sobrevivente'''
         
-    def patch(self, request, id_sobrevivente):
+    def patch(self, request):
         try:
+            id_sobrevivente = request.data['sobrevivente']
             sobrevivente = Sobrevivente.objects.get(id=id_sobrevivente)
             serializer = SobreviventeLocalizacaoSerializer(sobrevivente, data=request.data, partial=True)
         except:
@@ -137,7 +140,7 @@ class SobreviventeLocalizacao(APIView):
 class SobreviventeInfectado(APIView):
     '''Busca e atualiza no banco de dados as informações de quantas vezes um sobrevivente foi avistado infectado'''
 
-    def post(self, request):
+    def patch(self, request):
         infectado_serializer = InfectadoSerializer(data=request.data)
 
         if infectado_serializer.is_valid():

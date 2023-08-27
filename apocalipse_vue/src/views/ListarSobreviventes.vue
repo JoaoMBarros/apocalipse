@@ -28,9 +28,11 @@ import axios from 'axios';
 export default{
     props: {sobreviventes: 'sobreviventes'},
     name: 'ListarSobreviventes',
+    components: {
+    },
     data() {
     return {
-        mostrarInventario: {} // Mostrar inventário para cada sobrevivente
+        mostrarInventario: {}
     };
     },
     methods: {
