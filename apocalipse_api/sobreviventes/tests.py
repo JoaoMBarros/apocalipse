@@ -1,303 +1,589 @@
-from django.test import TestCase
-from django.urls import reverse
+import uuid
+from rest_framework import status
+from rest_framework.test import APITestCase
 from .models import Sobrevivente, Inventario
 
-# Create your tests here.
-class TesteListagemSobreviventes(TestCase):
-    def test_listagem_sobreviventes(self):
-        response = self.client.get('/sobreviventes/')
-        self.assertEqual(response.status_code, 200)
+class TestarListagemSobreviventes(APITestCase):
+    def testar_listagem_sobreviventes(self):
+        request = self.client.get('/sobreviventes/')
+        self.assertEqual(request.status_code, status.HTTP_200_OK)
 
-class TesteCadastroSobrevivente(TestCase):
-    def test_cadastro_sobrevivente(self):
-        response = self.client.post('/sobreviventes/', {
-            'nome': 'Teste',
-            'idade': 20,
-            'sexo': 'M',
-            'latitude': 0,
-            'longitude': 0,
-            'avistado_infectado': 0,
-            'infectado': False
-        })
-        self.assertEqual(response.status_code, 201)
+class TestarCriacaoIdJogo(APITestCase):
+    def testar_criacao_id_jogo(self):
+        request = self.client.get('/sobreviventes/novo_jogo/')
+        self.assertEqual(request.status_code, status.HTTP_200_OK)
+
+class TestarCriacaoSobreviventeInventario(APITestCase):
+    def testar_criacao_sobrevivente_inventario(self):
+        payload = {
+            "sobrevivente": {
+                "sobrevivente": 100,
+                "nome": "Teste",
+                "idade": 20,
+                "sexo": "M",
+                "jogo_id": 123
+            },
+            "inventario": {
+                "agua": 10,
+                "comida": 10,
+                "medicamento": 10,
+                "municao": 10,
+            }
+        }
+
+        request = self.client.post('/sobreviventes/', payload, format="json")
+        self.assertEqual(request.status_code, status.HTTP_201_CREATED)
+
+class TestarCriacaoSobreviventeInvalido(APITestCase):
+    def testar_criacao_sobrevivente_sem_nome(self):
+        payload = {
+            "sobrevivente": {
+                "sobrevivente": 100,
+                "idade": 20,
+                "sexo": "M",
+                "jogo_id": 123
+            },
+            "inventario": {
+                "agua": 10,
+                "comida": 10,
+                "medicamento": 10,
+                "municao": 10,
+                "outros_itens": "Teste"
+            }
+        }
+        request = self.client.post('/sobreviventes/', payload, format="json")
+        self.assertEqual(request.status_code, status.HTTP_400_BAD_REQUEST)
     
-    def test_cadastro_sobrevivente_sexo_invalido(self):
-        response = self.client.post('/sobreviventes/', {
-            'nome': 'Teste',
-            'idade': 20,
-            'sexo': 'X',
-            'latitude': 0,
-            'longitude': 0,
-            'avistado_infectado': 0,
-            'infectado': False
-        })
-        self.assertEqual(response.status_code, 400)
+    def testar_criacao_sobrevivente_sem_idade(self):
+        payload = {
+            "sobrevivente": {
+                "sobrevivente": 100,
+                "nome": "Teste",
+                "sexo": "M",
+                "jogo_id": 123
+            },
+            "inventario": {
+                "agua": 10,
+                "comida": 10,
+                "medicamento": 10,
+                "municao": 10,
+                "outros_itens": "Teste"
+            }
+        }
+        request = self.client.post('/sobreviventes/', payload, format="json")
+        self.assertEqual(request.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_cadastro_sobrevivente_json_invalido(self):
-        response = self.client.post('/sobreviventes/', {
-            'idade': 20,
-            'sexo': 'M',
-            'latitude': 0,
-            'longitude': 0,
-            'avistado_infectado': 0,
-            'infectado': False
-        })
-        self.assertEqual(response.status_code, 400)
+class TestarListagemSobreviventesIdJogo(APITestCase):
+    def testar_listagem_sobreviventes_id_jogo(self):
+        teste_uuid = uuid.uuid4()
 
-class TesteBuscaSobrevivente(TestCase):
-    # Criacao de um sobrevivente de testes diretamente no objects
-    def setUp(self):
-        from .models import Sobrevivente
+        payload = {
+            "sobrevivente": {
+                "sobrevivente": 100,
+                "nome": "Teste",
+                "idade": 20,
+                "sexo": "M",
+                "jogo_id": teste_uuid
+            },
+            "inventario": {
+                "agua": 10,
+                "comida": 10,
+                "medicamento": 10,
+                "municao": 10,
+                "outros_itens": "Teste"
+            }
+        }
+        request = self.client.post('/sobreviventes/', payload, format="json")
+        self.assertEqual(request.status_code, status.HTTP_201_CREATED)
+
+        payload = {
+            "sobrevivente": {
+                "sobrevivente": 100,
+                "nome": "Teste",
+                "idade": 20,
+                "sexo": "M",
+                "jogo_id": teste_uuid
+            },
+            "inventario": {
+                "agua": 10,
+                "comida": 10,
+                "medicamento": 10,
+                "municao": 10,
+                "outros_itens": "Teste"
+            }
+        }
+        request = self.client.post('/sobreviventes/', payload, format="json")
+        self.assertEqual(request.status_code, status.HTTP_201_CREATED)
+        
+        request = self.client.get(f'/sobreviventes/{teste_uuid}/')
+        self.assertEqual(request.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(request.data), 2)
+
+class TestarListagemSobreviventesIdJogoInvalido(APITestCase):
+    def testar_listagem_sobreviventes_id_jogo_invalido(self):
+        teste_uuid = uuid.uuid4()
+
+        request = self.client.get(f'/sobreviventes/{teste_uuid}/')
+        self.assertEqual(request.status_code, status.HTTP_404_NOT_FOUND)
+
+class TestarListagemSobreviventesIdSobrevivente(APITestCase):
+    def testar_listagem_sobreviventes_id_sobrevivente(self):
         Sobrevivente.objects.create(
             id=100,
-            nome='Teste',
+            nome="Teste",
             idade=20,
-            sexo='M',
-            latitude=0,
-            longitude=0,
-            avistado_infectado=0,
-            infectado=False
+            sexo="M",
+            jogo_id=123
         )
+        request = self.client.get('/sobreviventes/100/')
+        self.assertEqual(request.status_code, status.HTTP_200_OK)
 
-    def test_busca_sobrevivente(self):
-        response = self.client.get('/sobreviventes/100/')
-        self.assertEqual(response.status_code, 200)
-    
-    def test_busca_sobrevivente_invalido(self):
-        response = self.client.get('/sobreviventes/5000/')
-        self.assertEqual(response.status_code, 404)
-    
+class TestarListagemSobreviventesIdSobreviventeInvalido(APITestCase):
+    def testar_listagem_sobreviventes_id_sobrevivente_invalido(self):
+        request = self.client.get('/sobreviventes/100/')
+        self.assertEqual(request.status_code, status.HTTP_404_NOT_FOUND)
 
-class TesteAtualizacaoLocalizacaoSobrevivente(TestCase):
-
-    # Criacao de um sobrevivente de testes diretamente no objects
-    def setUp(self):
-        from .models import Sobrevivente
+class TestarListagemSobreviventesInventario(APITestCase):
+    def testar_listagem_sobreviventes_inventario(self):
         Sobrevivente.objects.create(
             id=100,
-            nome='Teste',
+            nome="Teste",
             idade=20,
-            sexo='M',
-            latitude=0,
-            longitude=0,
-            avistado_infectado=0,
-            infectado=False
-        )
-
-        response = self.client.get('/sobreviventes/100/')
-        self.assertEqual(response.status_code, 200)
-    
-    # def test_atualizacao_localizacao_sobrevivente(self):
-    #     url = reverse('localizacao', args=[1])
-
-    #     response = self.client.patch(url, {
-    #         'latitude': 0.0,
-    #         'longitude': 0.0
-    #     })
-
-    #     print(response.content)
-    #     self.assertEqual(response.status_code, 200)
-    
-    # def test_atualizacao_localizacao_sobrevivente_invalido(self):
-    #     response = self.client.patch('/sobreviventes/1/localizacao/', {
-    #         'latitude': 'teste',
-    #         'longitude': 'teste'
-    #     })
-    #     self.assertEqual(response.status_code, 400)
-
-class CriacaoDeInventario(TestCase):
-    def setUp(self):
-        from .models import Sobrevivente
-        Sobrevivente.objects.create(
-            id=100,
-            nome='Teste',
-            idade=20,
-            sexo='M',
-            latitude=0,
-            longitude=0,
-            avistado_infectado=0,
-            infectado=False
-        )
-
-        response = self.client.get('/sobreviventes/100/')
-        self.assertEqual(response.status_code, 200)
-    
-    def test_criacao_inventario(self):
-        response = self.client.post('/sobreviventes/100/inventario/', {
-            'sobrevivente': 100,
-            'agua': 1,
-            'comida': 1,
-            'medicamento': 1,
-            'municao': 1,
-            'outros_itens': 'teste'
-        })
-
-        self.assertEqual(response.status_code, 201)
-    
-    def test_criacao_inventario_invalido(self):
-        response = self.client.post('/sobreviventes/100/inventario/', {
-            'agua': 'teste',
-            'comida': 'teste',
-            'medicamento': 'teste',
-            'municao': 'teste',
-            'outros_itens': 'teste'
-        })
-        self.assertEqual(response.status_code, 400)
-
-class TesteTrocaItens(TestCase):
-    def setUp(self):
-        from .models import Sobrevivente
-        Sobrevivente.objects.create(
-            id=100,
-            nome='Teste',
-            idade=20,
-            sexo='M',
-            latitude=0,
-            longitude=0,
-            avistado_infectado=0,
-            infectado=False
-        )
-
-        Sobrevivente.objects.create(
-            id=200,
-            nome='Teste',
-            idade=20,
-            sexo='M',
-            latitude=0,
-            longitude=0,
-            avistado_infectado=0,
-            infectado=False
-        )
-
-        response = self.client.get('/sobreviventes/100/')
-        self.assertEqual(response.status_code, 200)
-
-        # Criação do inventário de cada
-        response = self.client.post('/sobreviventes/100/inventario/', {
-            'sobrevivente': 100,
-            'agua': 1,
-            'comida': 1,
-            'medicamento': 1,
-            'municao': 1,
-            'outros_itens': 'teste'
-        })
-
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data['agua'], 1)
-        inventario = Inventario.objects.get(sobrevivente=100)
-        self.assertEqual(inventario.agua, 1)
-
-        response = self.client.post('/sobreviventes/200/inventario/', {
-            'sobrevivente': 200,
-            'agua': 1,
-            'comida': 1,
-            'medicamento': 1,
-            'municao': 1,
-            'outros_itens': 'teste'
-        })
-
-        self.assertEqual(response.status_code, 201)
-    
-    # def test_troca_itens(self):
-    #     payload = {
-    #         "troca": [
-    #             {
-    #                 "sobrevivente": 100,
-    #                 "itens": {
-    #                     "agua": 1
-    #                 }
-    #             },
-    #             {
-    #                 "sobrevivente": 200,
-    #                 "itens": {
-    #                     "comida": 1,
-    #                     "municao": 1
-    #                 }
-    #             }
-    #         ]
-    #     }
-
-    #     response = self.client.post('/sobreviventes/troca/', data=payload)
-
-    #     print(response.content)
-    #     self.assertEqual(response.status_code, 200)
-
-    #     # Verifica se os itens foram trocados
-    #     response = self.client.get('/sobreviventes/100/inventario/')
-    #     self.assertEqual(response.status_code, 100)
-    #     self.assertEqual(response.data['agua'], 0)
-    #     self.assertEqual(response.data['comida'], 2)
-    #     self.assertEqual(response.data['medicamento'], 1)
-    #     self.assertEqual(response.data['municao'], 2)
-
-    #     response = self.client.get('/sobreviventes/200/inventario/')
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertEqual(response.data['agua'], 2)
-    #     self.assertEqual(response.data['comida'], 0)
-    #     self.assertEqual(response.data['medicamento'], 1)
-    #     self.assertEqual(response.data['municao'], 0)
-
-class AvistaSobreviventeInfectado(TestCase):
-    def setUp(self):
-        Sobrevivente.objects.create(
-            id=100,
-            nome='Teste',
-            idade=20,
-            sexo='M',
-            latitude=0,
-            longitude=0,
-            avistado_infectado=0,
-            infectado=False
+            sexo="M",
+            jogo_id=123
         )
 
         Inventario.objects.create(
             sobrevivente_id=100,
-            agua=1,
-            comida=1,
-            medicamento=1,
-            municao=1,
-            outros_itens='teste'
+            agua=10,
+            comida=10,
+            medicamento=10,
+            municao=10,
+            outros_itens="Teste"
         )
 
-        response = self.client.get('/sobreviventes/100/')
-        self.assertEqual(response.status_code, 200)
-    
-    def test_avista_sobrevivente_infectado(self):
-        response = self.client.post('/sobreviventes/infectado/', {
-            'sobrevivente': 100
-        })
-        self.assertEqual(response.status_code, 200)
+        request = self.client.get('/sobreviventes/100/inventario/')
+        self.assertEqual(request.status_code, status.HTTP_200_OK)
+
+class TestarListagemSobreviventesInventarioInvalido(APITestCase):
+    def testar_listagem_sobreviventes_inventario_invalido(self):
+        request = self.client.get('/sobreviventes/100/inventario/')
+        self.assertEqual(request.status_code, status.HTTP_404_NOT_FOUND)
+
+class TestarAtualizacaoSobreviventeLocalizacao(APITestCase):
+    def testar_atualizacao_sobrevivente_localizacao(self):
+        Sobrevivente.objects.create(
+            id=100,
+            nome="Teste",
+            idade=20,
+            sexo="M",
+            jogo_id=123
+        )
+        request = self.client.patch('/sobreviventes/localizacao/', {"sobrevivente": 100, "latitude": 10, "longitude": 10}, format="json")
+        self.assertEqual(request.status_code, status.HTTP_200_OK)
+
+        sobrevivente = Sobrevivente.objects.get(id=100)
+        self.assertEqual(sobrevivente.latitude, 10)
+        self.assertEqual(sobrevivente.longitude, 10)
+
+class TestarAtualizacaoSobreviventeInvalidoLocalizacao(APITestCase):
+    def testar_atualizacao_sobrevivente_localizacao_invalido(self):
+        request = self.client.patch('/sobreviventes/localizacao/', {"sobrevivente": 100, "latitude": 10, "longitude": 10}, format="json")
+        self.assertEqual(request.status_code, status.HTTP_404_NOT_FOUND)
+
+class TestarAtualizacaoSobreviventeLocalizacaoInvalida(APITestCase):
+    def testar_atualizacao_sobrevivente_localizacao_invalida(self):
+        Sobrevivente.objects.create(
+            id=100,
+            nome="Teste",
+            idade=20,
+            sexo="M",
+            jogo_id=123
+        )
+        request = self.client.patch('/sobreviventes/localizacao/', {"sobrevivente": 100, "latitude": "Teste", "longitude": 10}, format="json")
+        self.assertEqual(request.status_code, status.HTTP_400_BAD_REQUEST)
+
+class TestarSobreviventeVistoInfectado(APITestCase):
+    def testar_sobrevivente_visto_infectado(self):
+        Sobrevivente.objects.create(
+            id=100,
+            nome="Teste",
+            idade=20,
+            sexo="M",
+            jogo_id=123
+        )
+        request = self.client.patch('/sobreviventes/infectado/', {"sobrevivente": 100}, format="json")
+        self.assertEqual(request.status_code, status.HTTP_200_OK)
+
         sobrevivente = Sobrevivente.objects.get(id=100)
         self.assertEqual(sobrevivente.avistado_infectado, 1)
 
-    def test_avista_sobrevivente_infectado_3_vezes(self):
-        response = self.client.post('/sobreviventes/infectado/', {
-            'sobrevivente': 100
-        })
-        self.assertEqual(response.status_code, 200)
-        sobrevivente = Sobrevivente.objects.get(id=100)
-        self.assertEqual(sobrevivente.avistado_infectado, 1)
-        self.assertEqual(sobrevivente.infectado, False)
+class TestarSobreviventeInvalidoVistoInfectado(APITestCase):
+    def testar_sobrevivente_visto_infectado_invalido(self):
+        request = self.client.patch('/sobreviventes/infectado/', {"sobrevivente": 100}, format="json")
+        self.assertEqual(request.status_code, status.HTTP_404_NOT_FOUND)
 
-        response = self.client.post('/sobreviventes/infectado/', {
-            'sobrevivente': 100
-        })
-        self.assertEqual(response.status_code, 200)
-        sobrevivente = Sobrevivente.objects.get(id=100)
-        self.assertEqual(sobrevivente.avistado_infectado, 2)
-        self.assertEqual(sobrevivente.infectado, False)
+class TestarSobreviventeInfectado(APITestCase):
+    def testar_sobrevivente_infectado(self):
+        Sobrevivente.objects.create(
+            id=100,
+            nome="Teste",
+            idade=20,
+            sexo="M",
+            jogo_id=123,
+            avistado_infectado=2
+        )
 
-        response = self.client.post('/sobreviventes/infectado/', {
-            'sobrevivente': 100
-        })
-        self.assertEqual(response.status_code, 200)
+        request = self.client.patch('/sobreviventes/infectado/', {"sobrevivente": 100}, format="json")
+        self.assertEqual(request.status_code, status.HTTP_200_OK)
+
         sobrevivente = Sobrevivente.objects.get(id=100)
-        self.assertEqual(sobrevivente.avistado_infectado, 3)
         self.assertEqual(sobrevivente.infectado, True)
-    
-    def test_avista_sobrevivente_invalido_infectado(self):
-        response = self.client.post('/sobreviventes/infectado/', {
-            'sobrevivente': 500
-        })
 
-        self.assertEqual(response.status_code, 404)
+class TestarSobreviventeInfectadoInvalido(APITestCase):
+    def testar_sobrevivente_visto_infectado_invalido(self):
+        request = self.client.patch('/sobreviventes/infectado/', {"sobrevivente": 100}, format="json")
+        self.assertEqual(request.status_code, status.HTTP_404_NOT_FOUND)
+
+class TestarTrocaItens(APITestCase):
+    def testar_troca_itens(self):
+        Sobrevivente.objects.create(
+            id=100,
+            nome="Teste",
+            idade=20,
+            sexo="M",
+            jogo_id=123
+        )
+
+        Sobrevivente.objects.create(
+            id=101,
+            nome="Teste",
+            idade=20,
+            sexo="M",
+            jogo_id=123
+        )
+
+        Inventario.objects.create(
+            sobrevivente_id=100,
+            agua=10,
+            comida=10,
+            medicamento=10,
+            municao=10,
+            outros_itens="Teste"
+        )
+
+        Inventario.objects.create(
+            sobrevivente_id=101,
+            agua=10,
+            comida=10,
+            medicamento=10,
+            municao=10,
+            outros_itens="Teste"
+        )
+
+        payload = {
+            "troca": [
+                {
+                    "sobrevivente": 100,
+                    "itens": {
+                        "agua": 1,
+                        "comida": 0,
+                        "medicamento": 0,
+                        "municao": 0
+                    },
+                },
+                {
+                    "sobrevivente": 101,
+                    "itens": {
+                        "agua": 0,
+                        "comida": 1,
+                        "medicamento": 0,
+                        "municao": 1
+                    },
+                }
+            ]
+        }
+        request = self.client.post('/sobreviventes/troca/', payload, format="json")
+        self.assertEqual(request.status_code, status.HTTP_200_OK)
+
+class TestarTrocaItensInvalida(APITestCase):
+    def test_trocar_itens_pontos_invalidos(self):
+        Sobrevivente.objects.create(
+            id=100,
+            nome="Teste",
+            idade=20,
+            sexo="M",
+            jogo_id=123
+        )
+
+        Sobrevivente.objects.create(
+            id=101,
+            nome="Teste",
+            idade=20,
+            sexo="M",
+            jogo_id=123
+        )
+
+        Inventario.objects.create(
+            sobrevivente_id=100,
+            agua=10,
+            comida=10,
+            medicamento=10,
+            municao=10,
+            outros_itens="Teste"
+        )
+
+        Inventario.objects.create(
+            sobrevivente_id=101,
+            agua=10,
+            comida=10,
+            medicamento=10,
+            municao=10,
+            outros_itens="Teste"
+        )
+
+        payload = {
+            "troca": [
+                {
+                    "sobrevivente": 100,
+                    "itens": {
+                        "agua": 1,
+                        "comida": 0,
+                        "medicamento": 0,
+                        "municao": 0
+                    },
+                },
+                {
+                    "sobrevivente": 101,
+                    "itens": {
+                        "agua": 0,
+                        "comida": 1,
+                        "medicamento": 1,
+                        "municao": 1
+                    },
+                }
+            ]
+        }
+
+        request = self.client.post('/sobreviventes/troca/', payload, format="json")
+        self.assertEqual(request.status_code, status.HTTP_400_BAD_REQUEST)
+    
+    def test_trocar_itens_sem_estoque(self):
+        Sobrevivente.objects.create(
+            id=100,
+            nome="Teste",
+            idade=20,
+            sexo="M",
+            jogo_id=123
+        )
+
+        Sobrevivente.objects.create(
+            id=101,
+            nome="Teste",
+            idade=20,
+            sexo="M",
+            jogo_id=123
+        )
+
+        Inventario.objects.create(
+            sobrevivente_id=100,
+            agua=0,
+            comida=0,
+            medicamento=0,
+            municao=0,
+            outros_itens="Teste"
+        )
+
+        Inventario.objects.create(
+            sobrevivente_id=101,
+            agua=0,
+            comida=0,
+            medicamento=0,
+            municao=0,
+            outros_itens="Teste"
+        )
+
+        payload = {
+            "troca": [
+                {
+                    "sobrevivente": 100,
+                    "itens": {
+                        "agua": 1,
+                        "comida": 0,
+                        "medicamento": 0,
+                        "municao": 0
+                    },
+                },
+                {
+                    "sobrevivente": 101,
+                    "itens": {
+                        "agua": 0,
+                        "comida": 1,
+                        "medicamento": 0,
+                        "municao": 1
+                    },
+                }
+            ]
+        }
+
+        request = self.client.post('/sobreviventes/troca/', payload, format="json")
+        self.assertEqual(request.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_trocar_itens_sobrevivente_infectado(self):
+        Sobrevivente.objects.create(
+            id=100,
+            nome="Teste",
+            idade=20,
+            sexo="M",
+            jogo_id=123,
+            infectado = True
+        )
+
+        Sobrevivente.objects.create(
+            id=101,
+            nome="Teste",
+            idade=20,
+            sexo="M",
+            jogo_id=123
+        )
+
+        Inventario.objects.create(
+            sobrevivente_id=100,
+            agua=10,
+            comida=10,
+            medicamento=10,
+            municao=10,
+            outros_itens="Teste"
+        )
+
+        Inventario.objects.create(
+            sobrevivente_id=101,
+            agua=10,
+            comida=10,
+            medicamento=10,
+            municao=10,
+            outros_itens="Teste"
+        )
+
+        payload = {
+            "troca": [
+                {
+                    "sobrevivente": 100,
+                    "itens": {
+                        "agua": 1,
+                        "comida": 0,
+                        "medicamento": 0,
+                        "municao": 0
+                    },
+                },
+                {
+                    "sobrevivente": 101,
+                    "itens": {
+                        "agua": 0,
+                        "comida": 1,
+                        "medicamento": 0,
+                        "municao": 1
+                    },
+                }
+            ]
+        }
+
+        request = self.client.post('/sobreviventes/troca/', payload, format="json")
+        self.assertEqual(request.status_code, status.HTTP_400_BAD_REQUEST)
+
+class TestaRelatorio(APITestCase):
+    def testa_relatorio(self):
+        uuid_teste = uuid.uuid4()
+
+        Sobrevivente.objects.create(
+            id=100,
+            nome="Teste",
+            idade=20,
+            sexo="M",
+            jogo_id=uuid_teste,
+            infectado = True
+        )
+
+        Sobrevivente.objects.create(
+            id=101,
+            nome="Teste",
+            idade=20,
+            sexo="M",
+            jogo_id=uuid_teste
+        )
+
+        Sobrevivente.objects.create(
+            id=102,
+            nome="Teste",
+            idade=20,
+            sexo="M",
+            jogo_id=uuid_teste
+        )
+
+        Sobrevivente.objects.create(
+            id=103,
+            nome="Teste",
+            idade=20,
+            sexo="M",
+            jogo_id=uuid_teste
+        )
+
+        Inventario.objects.create(
+            sobrevivente_id=100,
+            agua=10,
+            comida=10,
+            medicamento=10,
+            municao=10,
+            outros_itens="Teste"
+        )
+
+        Inventario.objects.create(
+            sobrevivente_id=101,
+            agua=10,
+            comida=10,
+            medicamento=10,
+            municao=10,
+            outros_itens="Teste"
+        )
+
+        Inventario.objects.create(
+            sobrevivente_id=102,
+            agua=10,
+            comida=10,
+            medicamento=10,
+            municao=10,
+            outros_itens="Teste"
+        )
+
+        Inventario.objects.create(
+            sobrevivente_id=103,
+            agua=10,
+            comida=10,
+            medicamento=10,
+            municao=10,
+            outros_itens="Teste"
+        )
+
+        request = self.client.get(f'/sobreviventes/{uuid_teste}/relatorio/')
+        self.assertEqual(request.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(request.data["porcentagem_sobreviventes_infectados"], 25)
+        self.assertEqual(request.data["porcentagem_sobreviventes_nao_infectados"], 75)
+        self.assertEqual(request.data["pontos_perdidos"], 100)
+        
+
+        self.assertEqual(request.data['quantidade_media_itens_nao_infectados']['agua'], 10)
+        self.assertEqual(request.data['quantidade_media_itens_nao_infectados']['comida'], 10)
+        self.assertEqual(request.data['quantidade_media_itens_nao_infectados']['medicamento'], 10)
+        self.assertEqual(request.data['quantidade_media_itens_nao_infectados']['municao'], 10)
+
+        self.assertEqual(request.data['quantidade_itens_perdidos']['agua'], 10)
+        self.assertEqual(request.data['quantidade_itens_perdidos']['comida'], 10)
+        self.assertEqual(request.data['quantidade_itens_perdidos']['medicamento'], 10)
+        self.assertEqual(request.data['quantidade_itens_perdidos']['municao'], 10)
+    
+    def testa_relatorio_invalido(self):
+        uuid_teste = uuid.uuid4()
+
+        request = self.client.get(f'/sobreviventes/{uuid_teste}/relatorio/')
+        self.assertEqual(request.status_code, status.HTTP_404_NOT_FOUND)

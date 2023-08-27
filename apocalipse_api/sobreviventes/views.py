@@ -97,7 +97,11 @@ class SobreviventeIdJogoView(APIView):
     def get(self, request, id_jogo):
         sobreviventes = Sobrevivente.objects.filter(jogo_id=id_jogo)
         serializer = SobreviventeSerializer(sobreviventes, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        if len(sobreviventes) > 0:
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
 class SobreviventeView(APIView):
     '''Busca e atualiza no banco de dados as informações de um sobrevivente'''
@@ -147,10 +151,8 @@ class SobreviventeInfectado(APIView):
             try:
                 sobrevivente = Sobrevivente.objects.get(id=infectado_serializer.data['sobrevivente'])
                 sobrevivente.avistado_infectado += 1
-
-                if sobrevivente.avistado_infectado >= 3:
-                    inventario = Inventario.objects.get(sobrevivente_id=infectado_serializer.data['sobrevivente'])
-                    inventario.inventario_disponivel = False
+                
+                if sobrevivente.avistado_infectado > 2:
                     sobrevivente.infectado = True
             
             except:
@@ -272,6 +274,10 @@ class Relatorio(APIView):
     
     def get(self, request, id_jogo):
         total_sobreviventes = Sobrevivente.objects.filter(jogo_id=id_jogo).count()
+        
+        if total_sobreviventes == 0:
+            return Response("Nenhum sobrevivente encontrado", status=status.HTTP_404_NOT_FOUND)
+
         sobreviventes_infectados_count = Sobrevivente.objects.filter(jogo_id=id_jogo, infectado=True).count()
         sobreviventes_nao_infectados_count = Sobrevivente.objects.filter(jogo_id=id_jogo, infectado=False).count()
 
@@ -295,7 +301,7 @@ class Relatorio(APIView):
         relatorio = {
             'porcentagem_sobreviventes_infectados': sobreviventes_infectados_porcentagem,
             'porcentagem_sobreviventes_nao_infectados': sobreviventes_nao_infectados_porcentagem,
-            'quantidade_itens_nao_infectados': {
+            'quantidade_media_itens_nao_infectados': {
                 'agua': agua_media_nao_infectados,
                 'comida': comida_media_nao_infectados,
                 'medicamento': medicamento_media_nao_infectados,

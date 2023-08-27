@@ -16,7 +16,7 @@
                         <div style="text-align: center;">
                             Média de itens por sobrevivente vivo
                             <ul>
-                                <li v-for="(value, key) in relatorio.quantidade_itens_nao_infectados" :key="key">
+                                <li v-for="(value, key) in relatorio.quantidade_media_itens_nao_infectados" :key="key">
                                     {{ key.charAt(0).toUpperCase() + key.slice(1) }}: {{ value }}
                                 </li>
                             </ul>
@@ -35,27 +35,44 @@
                 </div>
             </div>
         </div>
+        <button class="button is-danger is-rounded" style="font-family: Flesh-Eating Comic Bold;" @click="iniciarNovaSimulacao">Nova Simulação</button>
     </div>
 </template>
 
 <script>
 import axios from 'axios';
+import HomeView from './HomeView.vue';
 
 export default {
     name: 'RelatorioFinal',
+    components: {
+        HomeView
+    },
     data() {
         return {
             relatorio: '',
         };
     },
 
+    methods : {
+        iniciarNovaSimulacao(){
+            axios.get('/sobreviventes/novo_jogo/') 
+            .then(response => {
+                console.log('Resposta da requisição GET:', response.data);
+                this.$router.push(`/sobrevivencia/${response.data}`);
+            })
+            .catch(error => {
+                console.error('Erro na requisição GET:', error);
+            });
+        }
+    },
     created(){
         axios.get(`/sobreviventes/${this.$route.params.id}/relatorio`)
         .then(response => {
             console.log('Resposta da requisição GET:', response.data);
             this.relatorio=response.data;
         })
-    }
+    },
 }
 
 

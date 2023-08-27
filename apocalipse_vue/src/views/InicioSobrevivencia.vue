@@ -5,7 +5,7 @@
         <p style="font-family: Flesh-Eating Comic Bold; font-size: 100px;">
           Apocalipse
         </p>
-        <button class="button is-danger is-rounded" @click="comecarAcoes">
+        <button class="button is-danger is-rounded" style="font-family: Flesh-Eating Comic Bold;" @click="comecarAcoes">
           <span class="icon"><i class="fas fa-biohazard"></i></span>
           <span>Iniciar</span>
         </button>
@@ -20,7 +20,6 @@
 <script>
 import axios from 'axios';
 import ListarSobreviventes from './ListarSobreviventes.vue';
-import { useRoute  } from 'vue-router';
 
 export default {
     name: 'InicioSobrevivenciaView',

@@ -5,12 +5,12 @@
             <h2 class="is-size-2 has-text-centered"> Adicionar sobreviventes</h2>
             </div>
 
-            <button style="margin-right: 10px;" class="button is-danger is-rounded" @click="adicionarSobrevivente">
+            <button style="font-family: Flesh-Eating Comic Bold; margin-right: 10px;" class="button is-danger is-rounded" @click="adicionarSobrevivente">
             <span class="icon"> <i class="fas fa-biohazard"></i></span>
             <span>Novo Sobrevivente</span>
             </button>
             
-            <button class="button is-danger is-rounded" @click="iniciar">
+            <button style="font-family: Flesh-Eating Comic Bold;" class="button is-danger is-rounded" @click="iniciar">
             <span class="icon"> <i class="fas fa-biohazard"></i></span>
             <span>Iniciar</span>
             </button>
@@ -23,9 +23,6 @@
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-import axios from 'axios'
 import NovoSobrevivente from './NovoSobrevivente.vue';
 import { useRoute  } from 'vue-router';
 
