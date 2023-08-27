@@ -13,4 +13,5 @@ urlpatterns = [
     path('troca/', view=views.TrocaItens.as_view(), name='troca'),
     path('<uuid:id_jogo>/nova_acao/', views.NovaAcao.as_view(), name='nova_acao'),
     path('<uuid:id_jogo>/relatorio/', views.Relatorio.as_view(), name='relatorio'),
+    path('<uuid:id_jogo>/deletar/', views.DeletaJogo.as_view(), name='deletar_jogo')
 ]

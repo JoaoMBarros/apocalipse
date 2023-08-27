@@ -60,9 +60,20 @@ export default {
             .then(response => {
                 console.log('Resposta da requisição GET:', response.data);
                 this.$router.push(`/sobrevivencia/${response.data}`);
+
+                this.deletaSimulacaoAtual();
             })
             .catch(error => {
                 console.error('Erro na requisição GET:', error);
+            });
+        },
+        deletaSimulacaoAtual(){
+            axios.delete(`/sobreviventes/${this.$route.params.id}/deletar`)
+            .then(response => {
+                console.log('Resposta da requisição DELETE:', response.data);
+            })
+            .catch(error => {
+                console.error('Erro na requisição DELETE:', error);
             });
         }
     },
@@ -73,6 +84,7 @@ export default {
             this.relatorio=response.data;
         })
     },
+    
 }
 
 

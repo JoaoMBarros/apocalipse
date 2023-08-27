@@ -26,6 +26,10 @@ const routes = [
   path: '/sobrevivencia/:id/relatorio/',
   name: 'relatorio',
   component: () => import(/* webpackChunkName: "sobrevivencia" */ '../views/RelatorioFinal.vue')
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: "/",
   }
 ]
 

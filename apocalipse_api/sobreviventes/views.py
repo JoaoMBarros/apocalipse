@@ -317,3 +317,17 @@ class Relatorio(APIView):
         }
 
         return Response(relatorio, status=status.HTTP_200_OK)
+
+class DeletaJogo(APIView):
+    '''Deleta todos os sobreviventes de um jogo'''
+
+    def delete(self, request, id_jogo):
+        sobreviventes = Sobrevivente.objects.filter(jogo_id=id_jogo)
+        inventarios = Inventario.objects.filter(sobrevivente__jogo_id=id_jogo)
+
+        if len(sobreviventes) > 0:
+            sobreviventes.delete()
+            inventarios.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        
+        return Response(status=status.HTTP_404_NOT_FOUND)

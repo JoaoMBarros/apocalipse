@@ -11,3 +11,29 @@ Python, Django, Django Rest, Postgres, HTML, CSS, Javascript, Vue 3.
 - Infecção de sobreviventes
 - Ações aleatórias de sobreviventes
 - Relatório final
+
+## API Endpoints
+#### GET
+- [#](#Buscar-sobreviventes) /sobreviventes/ 
+- /sobreviventes/id_do_sobrevivente/
+- /sobreviventes/id_jogo/
+- /sobreviventes/id_jogo/nova_acao/
+- /sobreviventes/novo_jogo/
+- /sobreviventes/id_do_sobrevivente/inventario/
+- /sobreviventes/id_do_jogo/relatorio/
+
+#### POST
+- /sobreviventes/
+- /troca/
+
+#### PUT
+- /sobreviventes/id_do_sobrevivente/
+
+#### PATCH
+- /sobreviventes/localizacao/
+- /sobreviventes/infectado/
+
+#### DELETE
+- sobreviventes/id_jogo/deletar/
+
+## Buscar sobreviventes
