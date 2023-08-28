@@ -5,11 +5,18 @@
         <p style="font-family: Flesh-Eating Comic Bold; font-size: 100px;">
           Apocalipse
         </p>
+
+          <button class="button is-danger is-rounded" style="font-family: Flesh-Eating Comic Bold; margin-right: 10px;" @click="voltar">
+            <span class="icon"><i class="fas fa-biohazard"></i></span>
+            <span>Voltar</span>
+          </button>
+
         <button class="button is-danger is-rounded" style="font-family: Flesh-Eating Comic Bold;" @click="comecarAcoes">
           <span class="icon"><i class="fas fa-biohazard"></i></span>
           <span>Iniciar</span>
         </button>
-        <div class="columns is-flex-wrap-wrap">
+        
+        <div class="columns is-flex-wrap-wrap" style="margin: 20px;">
           <ListarSobreviventes :sobreviventes="this.sobreviventes"/>
         </div>
       </div>
@@ -41,8 +48,6 @@ export default {
                 municao: '',
             },
             sobreviventes: [],
-            id_jogo: '',
-            current_url: '',
         };
     },
     methods: {
@@ -59,6 +64,9 @@ export default {
           },
           comecarAcoes(){
             this.$router.push(`/sobrevivencia/${this.$route.params.id}/acoes/`)
+          },
+          voltar(){
+            this.$router.go(-1)
           }
     },
     created(){

@@ -2,7 +2,7 @@
     <div class="box has-background-white-ter animate__animated animate__fadeIn" style="width: 25%; font-family: Flesh-Eating Comic Bold; margin: 45px;">
       <template v-if="!mostrarInventario">
         <label>Nome: <input class="input" type="text" v-model="sobrevivente.nome"></label>
-        <label>Idade: <input class="input" type="number" v-model="sobrevivente.idade"></label>
+        <label>Idade: <br><input style="width: 25%" class="input" type="number" v-model="sobrevivente.idade"></label>
         <div class="select is-multiple" style="width: 100%">
           Sexo:
           <select @change="muda($event)">
@@ -82,11 +82,9 @@
 
           axios.post('/sobreviventes/', jsonData)
             .then(response => {
-              console.log('Dados enviados:', response.data);
               this.mostrarInventario = false;
             })
             .catch(error => {
-              console.error('Erro ao enviar dados:', error);
             });
         } else {
           this.mostrarInventario = true;
@@ -108,7 +106,6 @@
     created() {
         const router = useRoute();
         this.sobrevivente.jogo_id = router.params.id;
-        console.log(this.routeId);
     },
 
   };

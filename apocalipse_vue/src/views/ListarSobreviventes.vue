@@ -1,6 +1,6 @@
 <template>
-    <div v-for="(sobrevivente, index) in sobreviventes" :key="index" class="box has-background-white-ter animate__animated animate__fadeIn" style="width: 25%; font-family: Flesh-Eating Comic Bold; margin: 45px;">
-        <label class="is-size-5">
+    <div v-for="(sobrevivente, index) in sobreviventes" :key="index" class="box has-background-white-ter animate__animated animate__fadeIn" style="width: 23%; font-family: Flesh-Eating Comic Bold; margin: 10px; margin-left: 22px;">
+        <label class="is-size-4">
           <span v-if="!mostrarInventario[sobrevivente.id]?.mostrarInventario">
             <strong>Nome:</strong> {{ sobrevivente.nome }}<br>
             <strong>Idade:</strong> {{ sobrevivente.idade }}<br>

@@ -1,6 +1,6 @@
 <template>
     <div class="box animate__animated animate__fadeIn" style="margin: 10%; height: auto; width: 75%;" id="app">
-        <div class="column is-12" style="margin-left: 0px">
+        <div class="column is-12" style="margin-left: 25px">
             <div style="margin-bottom: 40px; font-family: Flesh-Eating Comic Bold;">
             <h2 class="is-size-2 has-text-centered"> Adicionar sobreviventes</h2>
             </div>
@@ -15,7 +15,7 @@
             <span>Iniciar</span>
             </button>
 
-            <div class="columns is-flex-wrap-wrap">
+            <div class="columns is-flex-wrap-wrap" style="margin: 0px;">
                 <NovoSobrevivente v-for="(sobrevivente, index) in sobreviventes" :key="index" @excluir="excluirSobrevivente(index)" />
             </div>
         </div>
