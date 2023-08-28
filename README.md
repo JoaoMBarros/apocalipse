@@ -14,7 +14,7 @@ Python, Django, Django Rest, Postgres, HTML, CSS, Javascript, Vue 3.
 
 ## API Endpoints
 #### GET
-- [#](#Buscar-sobreviventes) /sobreviventes/ 
+- /sobreviventes/  -   [GET](#buscar-sobreviventes) / [POST](#adicionar-sobrevivente) 
 - /sobreviventes/id_do_sobrevivente/
 - /sobreviventes/id_jogo/
 - /sobreviventes/id_jogo/nova_acao/
@@ -23,7 +23,6 @@ Python, Django, Django Rest, Postgres, HTML, CSS, Javascript, Vue 3.
 - /sobreviventes/id_do_jogo/relatorio/
 
 #### POST
-- /sobreviventes/
 - /troca/
 
 #### PUT
@@ -37,3 +36,5 @@ Python, Django, Django Rest, Postgres, HTML, CSS, Javascript, Vue 3.
 - sobreviventes/id_jogo/deletar/
 
 ## Buscar sobreviventes
+
+## Adicionar sobrevivente

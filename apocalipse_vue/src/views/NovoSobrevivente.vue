@@ -3,7 +3,14 @@
       <template v-if="!mostrarInventario">
         <label>Nome: <input class="input" type="text" v-model="sobrevivente.nome"></label>
         <label>Idade: <input class="input" type="number" v-model="sobrevivente.idade"></label>
-        <label>Sexo: <input class="input" type="text" v-model="sobrevivente.sexo"></label>
+        <div class="select is-multiple" style="width: 100%">
+          Sexo:
+          <select @change="muda($event)">
+            <option value="" disabled selected>Selecione</option>
+            <option value="M">Masculino</option>
+            <option value="F">Feminino</option>
+          </select>
+        </div>
         
         <button style="margin-top: 10px; margin-right: 10px; font-family: Flesh-Eating Comic Bold;" class="button is-primary is-rounded" @click="toggleInventario()">Inventário</button>
         <button style="margin-top: 10px; font-family: Flesh-Eating Comic Bold;" class="button is-danger is-rounded" @click="excluirSobrevivente()">Excluir</button>
@@ -52,6 +59,9 @@
       toggleInventario() {
         this.mostrarInventario = !this.mostrarInventario;
       },
+      muda(event) {
+        this.sobrevivente.sexo = event.target.value;
+      },
 
     // Função que envia os dados do sobrevivente e do inventário para a API
       enviarDados() {
@@ -90,7 +100,7 @@
 
     // Função que exclui o sobrevivente
       excluirSobrevivente() {
-            this.$emit('excluir');
+          this.$emit('excluir');
       },
     },
 

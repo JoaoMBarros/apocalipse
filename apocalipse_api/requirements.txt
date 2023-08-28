@@ -1,6 +1,6 @@
-django
-djangorestframework
+django==3.2.20
+djangorestframework==3.14.0
 markdown
-django-filter
-psycopg2
-django-cors-headers
+django-filter==23.2
+psycopg2==2.9.7
+django-cors-headers==4.1.0
