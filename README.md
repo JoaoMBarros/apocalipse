@@ -1,5 +1,3 @@
-Claro, aqui está o comando em markdown:
-
 ## Configuração Docker Compose
 
 Para iniciar sua aplicação usando Docker Compose, siga os seguintes passos:
