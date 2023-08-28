@@ -1,5 +1,5 @@
 <template>
-    <div class="box animate__animated animate__fadeIn" style="margin: 10%; height: auto; width: 75%;">
+    <div class="box animate__animated animate__fadeIn" style="margin: 10%; margin-left: 13%; height: auto; width: 75%;">
         <div class="column is-12" style="margin-left: 0px">
             <div style="margin-bottom: 40px; font-family: Flesh-Eating Comic Bold;">
                 <h2 class="is-size-2 has-text-centered">Relatório de Sobreviventes</h2>

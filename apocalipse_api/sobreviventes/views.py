@@ -281,8 +281,8 @@ class Relatorio(APIView):
         sobreviventes_infectados_count = Sobrevivente.objects.filter(jogo_id=id_jogo, infectado=True).count()
         sobreviventes_nao_infectados_count = Sobrevivente.objects.filter(jogo_id=id_jogo, infectado=False).count()
 
-        sobreviventes_infectados_porcentagem = float((sobreviventes_infectados_count / total_sobreviventes)) * 100
-        sobreviventes_nao_infectados_porcentagem = float((sobreviventes_nao_infectados_count / total_sobreviventes)) * 100
+        sobreviventes_infectados_porcentagem = round((sobreviventes_infectados_count / total_sobreviventes) * 100)
+        sobreviventes_nao_infectados_porcentagem = round((sobreviventes_nao_infectados_count / total_sobreviventes) * 100)
 
         inventarios = Inventario.objects.filter(sobrevivente__jogo_id=id_jogo)
 

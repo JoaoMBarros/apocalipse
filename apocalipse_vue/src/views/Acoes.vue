@@ -147,8 +147,8 @@ export default{
                 this.inventario = inventarioResponse.data;
 
                 if (this.acao === 'fugiu') {
-                    this.random_latitude = this.getRandomArbitrary(-15, 15);
-                    this.random_longitude = this.getRandomArbitrary(-15, 15);
+                    this.random_latitude = this.randomFloat(-15, 15);
+                    this.random_longitude = this.randomFloat(-15, 15);
                 }
 
                 if (this.acao === 'troca' || this.acao === 'visto_infectado') {
@@ -225,7 +225,7 @@ export default{
             this.$router.push(`/sobrevivencia/${this.$route.params.id}/relatorio/`)
         },
         // Gera um numero float aleatório
-        getRandomArbitrary(min, max) {
+        randomFloat(min, max) {
             return Math.random() * (max - min) + min;
         }
     },
