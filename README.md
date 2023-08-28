@@ -1,6 +1,6 @@
 ## Configuração Docker Compose
 
-Para iniciar sua aplicação usando Docker Compose, siga os seguintes passos:
+Para iniciar a aplicação usando Docker Compose, siga os seguintes passos:
 
 1. Certifique-se de ter o Docker e o Docker Compose instalados em seu sistema.
 
