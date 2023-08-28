@@ -10,8 +10,9 @@ services:
       - .:/apocalipse/apocalise_api
     ports:
       - "8000:8000"
+    depends_on:
+      - db
   
-
   front:
     container_name: front
     build:
@@ -21,3 +22,16 @@ services:
       - .:/apocalipse/apocalise_vue
     ports:
       - "8080:8080"
+    depends_on:
+      - django
+    
+  db:
+    container_name: db
+    image: postgres:10-alpine
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    
+    ports:
+      - "5432:5432"
