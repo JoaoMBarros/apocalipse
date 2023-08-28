@@ -162,7 +162,7 @@ class SobreviventeInfectado(APIView):
             return Response(status=status.HTTP_200_OK)
 
 class SobreviventeInventario(APIView):
-    '''Busca e cria no banco de dados as informações de inventário de um sobrevivente'''
+    '''Busca no banco de dados as informações de inventário de um sobrevivente'''
 
     def get(self, request, id_sobrevivente):
         try:
