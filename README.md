@@ -1,3 +1,8 @@
+# Aplicação de sobrevivência zumbi
+
+## Tecnologias
+Python, Django, Django Rest, Postgres, JavaScript, Bulma, Docker.
+
 ## Configuração Docker Compose
 
 Para iniciar a aplicação usando Docker Compose, siga os seguintes passos:
