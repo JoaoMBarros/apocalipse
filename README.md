@@ -13,6 +13,8 @@ Para iniciar a aplicação usando Docker Compose, siga os seguintes passos:
 
 3. Execute o seguinte comando para iniciar sua aplicação usando o Docker Compose:
 
+*Observação: Para usuários do Windows, antes de clonar o repositório, execute o seguinte comando: `git config --global core.autocrlf input`.*
+
 ```bash
 docker-compose up
 ```
