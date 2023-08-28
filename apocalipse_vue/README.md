@@ -1,3 +1,8 @@
+# Front aplicação simulação de sobrevivência
+
+## Tecnologias
+JavaScript, Vue.js, Bulma, Docker.
+
 ## Configuração do Projeto Vue.js
 
 Para executar um projeto Vue.js localmente, siga os seguintes passos:
